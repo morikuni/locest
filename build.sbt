@@ -9,8 +9,14 @@ lazy val commonSettings = Seq(
 lazy val root =
   (project in file("."))
     .settings(commonSettings)
-    .aggregate(util)
+    .aggregate(area, util)
 
 lazy val util =
   (project in file("util"))
     .settings(commonSettings)
+
+lazy val area =
+  (project in file("area"))
+    .enablePlugins(play.PlayScala)
+    .settings(commonSettings)
+    .dependsOn(util)
