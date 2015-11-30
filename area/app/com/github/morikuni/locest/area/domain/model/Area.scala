@@ -1,6 +1,7 @@
 package com.github.morikuni.locest.area.domain.model
 
 import com.github.morikuni.locest.util.{Property, Entity, Identifier}
+import play.api.libs.json.{Json, JsValue, Writes}
 
 case class AreaId(override val value: Int) extends Identifier[Int]
 

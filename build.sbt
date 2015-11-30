@@ -3,12 +3,14 @@ name := "locest"
 version := "0.1-SNAPSHOT"
 
 lazy val commonSettings = Seq(
-  scalaVersion := "2.11.7"
+  scalaVersion := "2.11.7",
+  libraryDependencies ++= Seq(
+    "com.typesafe" % "config" % "1.3.0"
+  )
 )
 
 lazy val root =
   (project in file("."))
-    .settings(commonSettings)
     .aggregate(area, util)
 
 lazy val util =
@@ -19,4 +21,10 @@ lazy val area =
   (project in file("area"))
     .enablePlugins(play.PlayScala)
     .settings(commonSettings)
+    .settings(
+      libraryDependencies ++= Seq(
+        "org.scalikejdbc" %% "scalikejdbc" % "2.3.0",
+        "mysql" % "mysql-connector-java" % "5.1.37"
+      )
+    )
     .dependsOn(util)
