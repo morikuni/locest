@@ -1,8 +1,9 @@
 package com.github.morikuni.locest.area.domain.repository
 
 import com.github.morikuni.locest.area.domain.model.{Area, AreaId, Coordinate}
-import com.github.morikuni.locest.util.{Repository, Transaction, TransactionManager}
-import scala.concurrent.{ExecutionContext, Future}
+import com.github.morikuni.locest.util.{TransactionManager, Repository, Transaction}
+
+trait AreaRepositorySession
 
 trait AreaRepository extends Repository[Area] {
 
@@ -13,7 +14,7 @@ trait AreaRepository extends Repository[Area] {
     *         Transaction.failed(NoSuchElementException) id に対応するエリアが存在しないとき
     *         Transaction.failed(IOException) 入出力に失敗したとき
     */
-  def find(id: AreaId): Transaction[Session, Area]
+  def find(id: AreaId): Transaction[AreaRepositorySession, Area]
 
 
   /** coordinate を含むエリアのIDを取得する。
@@ -23,22 +24,20 @@ trait AreaRepository extends Repository[Area] {
     *         Transaction.failed(NoSuchElementException) coordinate を含むエリアが存在しないとき
     *         Transaction.failed(IOException) 入出力に失敗したとき
     */
-  def findByCoordinate(coordinate: Coordinate): Transaction[Session, AreaId]
+  def findByCoordinate(coordinate: Coordinate): Transaction[AreaRepositorySession, AreaId]
 
   /** 全てのエリアIDを取得する。
     *
     * @return Transaction.successful(List[AreaId]) 成功時
     *         Transaction.failed(IOException) 入出力に失敗したとき
     */
-  def all: Transaction[Session, List[AreaId]]
+  def all: Transaction[AreaRepositorySession, List[AreaId]]
 }
-
-trait AreaRepositoryTransactionManager extends TransactionManager[Session] {
-  override def execute[A](transaction: Transaction[Session, A])(ctx: ExecutionContext): Future[A]
-}
-
 
 trait DependAreaRepository {
   def areaRepository: AreaRepository
-  def areaRepositoryTransactionManager: AreaRepositoryTransactionManager
+}
+
+trait DependAreaRepositoryTransactionManager {
+  def areaRepositoryTransactionManager: TransactionManager[AreaRepositorySession]
 }

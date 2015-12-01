@@ -3,13 +3,14 @@ package com.github.morikuni.locest.area.application.service.impl
 import com.github.morikuni.locest.area.application.dto.{AreaDto, AreaIdDto}
 import com.github.morikuni.locest.area.application.service.{AreaSearchService, DependAreaSearchService}
 import com.github.morikuni.locest.area.application.{DependExecutionContextProvider, InjectDefaultExecutionContextProvider}
-import com.github.morikuni.locest.area.domain.model.{Area, AreaId, Coordinate}
-import com.github.morikuni.locest.area.domain.repository.DependAreaRepository
-import com.github.morikuni.locest.area.domain.repository.impl.InjectAreaRepository
+import com.github.morikuni.locest.area.domain.model.{AreaId, Coordinate}
+import com.github.morikuni.locest.area.domain.repository.impl.{InjectAreaRepository, InjectAreaRepositoryTransactionManager}
+import com.github.morikuni.locest.area.domain.repository.{DependAreaRepository, DependAreaRepositoryTransactionManager}
 import scala.concurrent.{ExecutionContext, Future}
 
 trait AreaSearchServiceImpl extends AreaSearchService
   with DependAreaRepository
+  with DependAreaRepositoryTransactionManager
   with DependExecutionContextProvider {
 
   implicit lazy val ctx: ExecutionContext = executionContextProvider.default
@@ -55,5 +56,6 @@ trait InjectAreaSearchService extends DependAreaSearchService {
   override val areaSearchService: AreaSearchService =
     new AreaSearchServiceImpl
       with InjectAreaRepository
+      with InjectAreaRepositoryTransactionManager
       with InjectDefaultExecutionContextProvider
 }

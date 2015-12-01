@@ -1,16 +1,16 @@
 package com.github.morikuni.locest.area.domain.repository.impl
 
-import com.github.morikuni.locest.area.domain.repository.Session
-import com.github.morikuni.locest.util.{TransactionManager, Transaction}
+import com.github.morikuni.locest.area.domain.repository.AreaRepositorySession
+import com.github.morikuni.locest.util.{Transaction, TransactionManager}
 import com.typesafe.config.ConfigFactory
 import java.io.IOException
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
-import scalikejdbc.{DB, DBSession, ConnectionPool}
+import scalikejdbc.{ConnectionPool, DB, DBSession}
 
-case class MySQLSession(session: DBSession) extends Session
+case class MySQLSession(val session: DBSession) extends AreaRepositorySession
 
-object MySQLTransactionManager extends TransactionManager[Session] {
+object MySQLTransactionManager extends TransactionManager[MySQLSession] {
   Class.forName("com.mysql.jdbc.Driver")
 
   val (host, database, user, pass) = {
@@ -22,14 +22,13 @@ object MySQLTransactionManager extends TransactionManager[Session] {
       conf.getString("mysql.password")
     )
   }
-
   ConnectionPool.singleton(s"jdbc:mysql://${host}/${database}", user, pass)
 
-  def ask: Transaction[Session, DBSession] = Transaction { session =>
-    session.asInstanceOf[MySQLSession].session
+  def ask: Transaction[MySQLSession, DBSession] = Transaction { session =>
+    session.session
   }
 
-  override def execute[A](transaction: Transaction[Session, A])(ctx: ExecutionContext): Future[A] = {
+  override def execute[A](transaction: Transaction[MySQLSession, A])(ctx: ExecutionContext): Future[A] = {
     implicit val db = DB(ConnectionPool.borrow())
     try {
       db.begin()
