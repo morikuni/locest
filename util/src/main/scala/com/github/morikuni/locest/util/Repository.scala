@@ -1,3 +1,7 @@
 package com.github.morikuni.locest.util
 
-trait Repository[A <: Entity[_, _]]
+/** Entity の永続化を行う。
+  *
+  * @tparam XEntity 管理する Entity の型
+  */
+trait Repository[XEntity <: Entity[_, _]]

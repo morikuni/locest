@@ -2,6 +2,12 @@ package com.github.morikuni.locest.util
 
 import scala.concurrent.{Future, ExecutionContext}
 
+/** データの入出力処理を表す。
+  *
+  * @param run 入出力処理
+  * @tparam Env 入出力を行うための環境型
+  * @tparam A 入出力によって生成される型
+  */
 class Transaction[-Env, +A](val run: (Env, ExecutionContext) => Future[A]) {
   def flatMap[B, XEnv <: Env](f: A => Transaction[XEnv, B]): Transaction[XEnv, B] = Transaction { (e: XEnv, ctx: ExecutionContext) =>
     run(e, ctx).flatMap(a => f(a).run(e, ctx))(ctx)

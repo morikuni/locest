@@ -5,6 +5,11 @@ import play.api.libs.json.{Json, JsValue, Writes}
 
 case class AreaId(override val value: Int) extends Identifier[Int]
 
+/**
+  *
+  * @param name エリア名
+  * @param coordinate エリアの代表座標(重心など)
+  */
 case class AreaProperty(
   val name: String,
   val coordinate: Coordinate

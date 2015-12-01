@@ -4,7 +4,10 @@ import java.util.concurrent.Executors
 import scala.concurrent.ExecutionContext
 
 trait ExecutionContextProvider {
+  /** 通常時に使う */
   def default: ExecutionContext
+
+  /** Repository のIOなど時間がかかりそうなときに使う */
   def repository: ExecutionContext
 }
 

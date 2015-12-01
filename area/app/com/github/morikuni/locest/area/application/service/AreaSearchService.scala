@@ -8,12 +8,14 @@ import com.github.morikuni.locest.area.domain.repository.impl.InjectAreaReposito
 import scala.concurrent.Future
 
 trait AreaSearchService {
-  /** 全てのエリアIDを取得する。
+  /** id に対応するエリアを取得する。
     *
-    * @return Future.successful(List[AreaIdDto]) 成功時
+    * @param id 取得するID
+    * @return Future.successful(AreaDto) 成功時
+    *         Future.failed(NoSuchElementException) id に対応するエリアが存在しないとき
     *         Future.failed(IOException) 入出力に失敗したとき
     */
-  def allAreaId: Future[List[AreaIdDto]]
+  def search(id: Int): Future[AreaDto]
 
   /** 指定された座標を含むエリアのIDを取得する。
     *
@@ -26,14 +28,12 @@ trait AreaSearchService {
     */
   def searchIdOfAreaContain(lat: Double, lng: Double): Future[AreaIdDto]
 
-  /** id に対応するエリアを取得する。
+  /** 全てのエリアIDを取得する。
     *
-    * @param id 取得するID
-    * @return Future.successful(AreaDto) 成功時
-    *         Future.failed(NoSuchElementException) id に対応するエリアが存在しないとき
+    * @return Future.successful(List[AreaIdDto]) 成功時
     *         Future.failed(IOException) 入出力に失敗したとき
     */
-  def search(id: Int): Future[AreaDto]
+  def allAreaId: Future[List[AreaIdDto]]
 }
 
 trait DependAreaSearchService {

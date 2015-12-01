@@ -1,5 +1,9 @@
 package com.github.morikuni.locest.util
 
+/** Entity を識別する。
+  *
+  * @tparam A 識別子の型
+  */
 trait Identifier[A] {
 
   val value: A

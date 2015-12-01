@@ -25,4 +25,13 @@ object Coordinate {
     else if(lng > 180 || lng < -180) Failure(new IllegalArgumentException("lng must be (-180 <= lng <= 180)"))
     else Success(Coordinate(lat, lng))
   }
+
+  /** Coordinate をバリデーションなしで作成する。
+    * このメソッドは lat, lng が確実に正しい場合にのみ使用すること。
+    *
+    * @param lat 緯度
+    * @param lng 経度
+    * @return Coordinate
+    */
+  def createUnsafe(lat: Double, lng: Double): Coordinate = Coordinate(lat, lng)
 }
