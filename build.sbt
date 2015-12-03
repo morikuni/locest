@@ -22,7 +22,8 @@ lazy val area =
       libraryDependencies ++= Seq(
         "org.scalikejdbc" %% "scalikejdbc" % "2.3.0",
         "mysql" % "mysql-connector-java" % "5.1.37",
-        "com.typesafe" % "config" % "1.3.0"
+        "com.typesafe" % "config" % "1.3.0",
+        specs2 % "test"
       )
     )
     .dependsOn(util)
