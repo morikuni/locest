@@ -5,20 +5,20 @@ import scala.concurrent.{Future, ExecutionContext}
 /** データの入出力処理を表す。
   *
   * @param run 入出力処理
-  * @tparam Env 入出力を行うための環境型
+  * @tparam S 入出力を行うための環境型
   * @tparam A 入出力によって生成される型
   */
-class Transaction[-Env, +A](val run: (Env, ExecutionContext) => Future[A]) {
-  def flatMap[B, XEnv <: Env](f: A => Transaction[XEnv, B]): Transaction[XEnv, B] = Transaction { (e: XEnv, ctx: ExecutionContext) =>
+class Transaction[-S <: Session, +A](val run: (S, ExecutionContext) => Future[A]) {
+  def flatMap[B, XS <: S](f: A => Transaction[XS, B]): Transaction[XS, B] = Transaction { (e: XS, ctx: ExecutionContext) =>
     run(e, ctx).flatMap(a => f(a).run(e, ctx))(ctx)
   }
-  def map[B](f: A => B): Transaction[Env, B] = flatMap((a: A) => Transaction.successful(f(a)))
+  def map[B](f: A => B): Transaction[S, B] = flatMap((a: A) => Transaction.successful(f(a)))
 }
 
 object Transaction {
-  def apply[Env, A](f: (Env, ExecutionContext) => Future[A]): Transaction[Env, A] = new Transaction(f)
-  def apply[Env, A](f: Env => A): Transaction[Env, A] = Transaction((s, ctx) => Future(f(s))(ctx))
-  def successful[Env, A](a: A): Transaction[Env, A] = Transaction((_, _) => Future.successful(a))
-  def failed[Env, A](e: Throwable): Transaction[Env, A] = Transaction((_, _) => Future.failed(e))
-  def fromFuture[Env, A](f: Future[A]): Transaction[Env, A] = Transaction((_, _) => f)
+  def apply[S <: Session, A](f: (S, ExecutionContext) => Future[A]): Transaction[S, A] = new Transaction(f)
+  def apply[S <: Session, A](f: S => A): Transaction[S, A] = Transaction((s, ctx) => Future(f(s))(ctx))
+  def successful[S <: Session, A](a: A): Transaction[S, A] = Transaction((_, _) => Future.successful(a))
+  def failed[S <: Session, A](e: Throwable): Transaction[S, A] = Transaction((_, _) => Future.failed(e))
+  def fromFuture[S <: Session, A](f: Future[A]): Transaction[S, A] = Transaction((_, _) => f)
 }

@@ -1,7 +1,7 @@
 package com.github.morikuni.locest.area.domain.repository.impl
 
 import com.github.morikuni.locest.area.domain.repository.AreaRepositorySession
-import com.github.morikuni.locest.util.{Transaction, TransactionManager}
+import com.github.morikuni.locest.util.{Session, Transaction, TransactionManager}
 import com.typesafe.config.ConfigFactory
 import java.io.IOException
 import scala.concurrent.{ExecutionContext, Future}
@@ -24,8 +24,8 @@ object MySQLTransactionManager extends TransactionManager[MySQLSession] {
   }
   ConnectionPool.singleton(s"jdbc:mysql://${host}/${database}", user, pass)
 
-  def ask: Transaction[MySQLSession, DBSession] = Transaction { session =>
-    session.session
+  def ask[A >: MySQLSession <: Session]: Transaction[A, DBSession] = Transaction { (a, _) =>
+    Future.successful(a.asInstanceOf[MySQLSession].session)
   }
 
   override def execute[A](transaction: Transaction[MySQLSession, A])(ctx: ExecutionContext): Future[A] = {

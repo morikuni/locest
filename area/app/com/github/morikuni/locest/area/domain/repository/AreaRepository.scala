@@ -1,9 +1,9 @@
 package com.github.morikuni.locest.area.domain.repository
 
 import com.github.morikuni.locest.area.domain.model.{Area, AreaId, Coordinate}
-import com.github.morikuni.locest.util.{TransactionManager, Repository, Transaction}
+import com.github.morikuni.locest.util.{Session, TransactionManager, Repository, Transaction}
 
-trait AreaRepositorySession
+trait AreaRepositorySession extends Session
 
 trait AreaRepository extends Repository[Area] {
 
