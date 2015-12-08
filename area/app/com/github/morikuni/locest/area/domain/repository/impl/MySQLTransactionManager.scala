@@ -4,13 +4,14 @@ import com.github.morikuni.locest.area.domain.repository.AreaRepositorySession
 import com.github.morikuni.locest.util.{Session, Transaction, TransactionManager}
 import com.typesafe.config.ConfigFactory
 import java.io.IOException
+import java.sql.Connection
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 import scalikejdbc.{ConnectionPool, DB, DBSession}
 
-case class MySQLSession(val session: DBSession) extends AreaRepositorySession
+case class MySQLSession(override val session: DBSession) extends ScalikeJDBCSession with AreaRepositorySession
 
-object MySQLTransactionManager extends TransactionManager[MySQLSession] {
+object MySQLTransactionManager extends ScalikeJDBCTransactionManager[MySQLSession] {
   Class.forName("com.mysql.jdbc.Driver")
 
   val (host, database, user, pass) = {
@@ -22,32 +23,13 @@ object MySQLTransactionManager extends TransactionManager[MySQLSession] {
       conf.getString("mysql.password")
     )
   }
-  ConnectionPool.singleton(s"jdbc:mysql://${host}/${database}", user, pass)
+  ConnectionPool.add('mysql, s"jdbc:mysql://${host}/${database}", user, pass)
 
   def ask[A >: MySQLSession <: Session]: Transaction[A, DBSession] = Transaction { (a, _) =>
     Future.successful(a.asInstanceOf[MySQLSession].session)
   }
 
-  override def execute[A](transaction: Transaction[MySQLSession, A])(ctx: ExecutionContext): Future[A] = {
-    implicit val db = DB(ConnectionPool.borrow())
-    try {
-      db.begin()
-      val future = DB withinTx { session =>
-        transaction.run(MySQLSession(session), ctx)
-      }
-      future.andThen {
-        case Success(_) => db.commit()
-        case Failure(e) => e match {
-          case _: IOException => db.rollback()
-        }
-      }(ctx).andThen {
-        case _ => db.close()
-      }(ctx)
-    } catch {
-      case e: Exception =>
-        db.rollbackIfActive()
-        db.close()
-        throw e
-    }
-  }
+  override def borrow: Connection = ConnectionPool.borrow('mysql)
+
+  override def wrap(session: DBSession): MySQLSession = MySQLSession(session)
 }

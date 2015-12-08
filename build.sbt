@@ -23,6 +23,7 @@ lazy val area =
         "org.scalikejdbc" %% "scalikejdbc" % "2.3.0",
         "mysql" % "mysql-connector-java" % "5.1.37",
         "com.typesafe" % "config" % "1.3.0",
+        "org.postgresql" % "postgresql" % "9.3-1104-jdbc41",
         specs2 % "test"
       )
     )
