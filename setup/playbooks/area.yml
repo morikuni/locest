@@ -1,0 +1,6 @@
+- hosts: area
+  sudo: true
+  user: vagrant
+  roles:
+    - postgresql
+    - postgis

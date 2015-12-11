@@ -1,0 +1,60 @@
+- name: PostgreSQLをインストール
+  yum:
+    name: postgresql-server
+    state: installed
+
+- name: PostgreSQLを初期化
+  become: yes
+  become_user: postgres
+  shell: initdb --no-locale --encoding=UTF-8 --pgdata={{ pgdata }}
+  args:
+    creates: "{{ pgdata }}/postgresql.conf"
+
+- name: 起動時にPostgreSQLも起動するように設定
+  shell: systemctl enable postgresql.service
+  args:
+    creates: /etc/systemd/system/multi-user.target.wants/postgresql.service
+
+- name: listen_addressを*に書き換える
+  lineinfile:
+    dest: "{{ pgdata }}/postgresql.conf"
+    backrefs: yes
+    regexp: "^#?listen_addresses\\s*=\\s*'.*'(.*)$"
+    line: "listen_addresses = '*'\\1"
+    state: present
+
+- name: 接続可能なネットワークの設定
+  lineinfile:
+    dest: "{{ pgdata }}/pg_hba.conf"
+    regexp: "^host\tall\tall\t{{ postgresql_network }}\tmd5"
+    line: "host\tall\tall\t{{ postgresql_network }}\tmd5"
+    state: present
+
+- name: PostgreSQLが起動しているかどうかを確認
+  shell: systemctl is-active postgresql
+  register: psql_starts
+  failed_when: false
+  changed_when: psql_starts.stdout == "inactive"
+
+- name: PostgreSQLを起動
+  shell: systemctl start postgresql
+  when: psql_starts.stdout == "inactive"
+
+- name: Ansibleのpostgresql_*モジュールに使う依存パッケージをインストール
+  yum:
+    name: python-psycopg2
+    state: present
+
+- name: PostgreSQLにユーザを作成
+  postgresql_user:
+    name: "{{ postgresql_user }}"
+    password: "{{ postgresql_password }}"
+    state: present
+
+- name: データベースを作成
+  postgresql_db:
+    name: "{{ postgresql_database }}"
+    encoding: "UTF-8"
+    owner: "{{ postgresql_user }}"
+    state: present
+

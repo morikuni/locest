@@ -1,0 +1,13 @@
+- name: EPELリポジトリを追加
+  yum: name=epel-release state=present
+
+- name: PostGISをインストール
+  yum:
+    name: postgis
+    state: installed
+    enablerepo: epel
+
+- name: PostGISを有効にする
+  postgresql_ext:
+    name: postgis
+    db: "{{ postgis_database }}"
