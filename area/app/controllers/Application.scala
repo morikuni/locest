@@ -1,6 +1,6 @@
 package controllers
 
-import com.github.morikuni.locest.area.application.dto.{AreaDto, AreaIdDto, ErrorDto}
+import com.github.morikuni.locest.area.application.dto.ErrorDto
 import com.github.morikuni.locest.area.application.service.DependAreaSearchService
 import com.github.morikuni.locest.area.application.service.impl.InjectAreaSearchService
 import com.github.morikuni.locest.area.application.{DependExecutionContextProvider, InjectDefaultExecutionContextProvider}
@@ -19,7 +19,7 @@ trait Application extends Controller
     areaSearchService.search(id)
       .map(dto => Ok(Json.toJson(dto)))
       .recover {
-        case _: NoSuchElementException => NotFound(Json.toJson(ErrorDto("no area has such ID.")))
+        case _: NoSuchElementException => NotFound(Json.toJson(ErrorDto(s"no area has such id.")))
         case _: IOException => InternalServerError(Json.toJson(ErrorDto.internalServerError))
       }
   }
@@ -35,8 +35,8 @@ trait Application extends Controller
     areaSearchService.searchIdOfAreaContain(lat, lng)
       .map(dto => Ok(Json.toJson(dto)))
       .recover {
-        case _: NoSuchElementException => NotFound(Json.toJson(ErrorDto("no area contains such (lat, lng).")))
-        case _: IllegalArgumentException => BadRequest(Json.toJson(ErrorDto("lat or lng is out of range.")))
+        case _: NoSuchElementException => NotFound(Json.toJson(ErrorDto(s"no area contains such coordinate.")))
+        case _: IllegalArgumentException => BadRequest(Json.toJson(ErrorDto("lattitude or lngitude is out of range.")))
         case _: IOException => InternalServerError(Json.toJson(ErrorDto.internalServerError))
       }
   }
