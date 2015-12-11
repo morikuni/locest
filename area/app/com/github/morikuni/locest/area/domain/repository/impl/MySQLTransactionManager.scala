@@ -1,13 +1,11 @@
 package com.github.morikuni.locest.area.domain.repository.impl
 
 import com.github.morikuni.locest.area.domain.repository.AreaRepositorySession
-import com.github.morikuni.locest.util.{Session, Transaction, TransactionManager}
+import com.github.morikuni.locest.util.{Session, Transaction}
 import com.typesafe.config.ConfigFactory
-import java.io.IOException
 import java.sql.Connection
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
-import scalikejdbc.{ConnectionPool, DB, DBSession}
+import scala.concurrent.Future
+import scalikejdbc.{ConnectionPool, DBSession}
 
 case class MySQLSession(override val session: DBSession) extends ScalikeJDBCSession with AreaRepositorySession
 
@@ -25,7 +23,7 @@ object MySQLTransactionManager extends ScalikeJDBCTransactionManager[MySQLSessio
   }
   ConnectionPool.add('mysql, s"jdbc:mysql://${host}/${database}", user, pass)
 
-  def ask[A >: MySQLSession <: Session]: Transaction[A, DBSession] = Transaction { (a, _) =>
+  override def ask[A >: MySQLSession <: Session]: Transaction[A, DBSession] = Transaction { (a, _) =>
     Future.successful(a.asInstanceOf[MySQLSession].session)
   }
 

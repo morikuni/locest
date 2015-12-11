@@ -1,13 +1,11 @@
 package com.github.morikuni.locest.area.domain.repository.impl
 
 import com.github.morikuni.locest.area.domain.repository.AreaRepositorySession
-import com.github.morikuni.locest.util.{Transaction, Session, TransactionManager}
+import com.github.morikuni.locest.util.{Session, Transaction}
 import com.typesafe.config.ConfigFactory
-import java.io.IOException
 import java.sql.Connection
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
-import scalikejdbc.{DB, DBSession, ConnectionPool}
+import scala.concurrent.Future
+import scalikejdbc.{ConnectionPool, DBSession}
 
 case class PostgreSQLSession(override val session: DBSession) extends ScalikeJDBCSession with AreaRepositorySession
 
@@ -26,7 +24,7 @@ object PostgreSQLTransactionManager extends ScalikeJDBCTransactionManager[Postgr
   }
   ConnectionPool.add('postgresql ,s"jdbc:postgresql://${host}:${port}/${database}", user, pass)
 
-  def ask[A >: PostgreSQLSession <: Session]: Transaction[A, DBSession] = Transaction { (a, _) =>
+  override def ask[S >: PostgreSQLSession <: Session]: Transaction[S, DBSession] = Transaction { (a, _) =>
     Future.successful(a.asInstanceOf[PostgreSQLSession].session)
   }
 

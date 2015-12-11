@@ -23,8 +23,14 @@ trait AreaSearchServiceImpl extends AreaSearchService
     *         Future.failed(IOException) 入出力に失敗したとき
     */
   override def search(id: Int): Future[AreaDto] =
-    areaRepositoryTransactionManager.execute(areaRepository.find(AreaId(id)))(executionContextProvider.repository)
-      .map(AreaDto.from)
+    for {
+      areaOption <- areaRepositoryTransactionManager.execute(areaRepository.find(AreaId(id)))(executionContextProvider.repository)
+      areaDto <- areaOption.fold[Future[AreaDto]](
+        Future.failed(new NoSuchElementException("No area has such id"))
+      )(
+        area => Future.successful(AreaDto.from(area))
+      )
+    } yield areaDto
 
   /** 指定された座標を含むエリアのIDを取得する。
     *
@@ -38,8 +44,13 @@ trait AreaSearchServiceImpl extends AreaSearchService
   override def searchIdOfAreaContain(lat: Double, lng: Double): Future[AreaIdDto] =
     for {
       coordinate <- Future.fromTry(Coordinate.create(lat, lng))
-      areaId <- areaRepositoryTransactionManager.execute(areaRepository.findByCoordinate(coordinate))(executionContextProvider.repository)
-    } yield AreaIdDto.from(areaId)
+      areaIdOption <- areaRepositoryTransactionManager.execute(areaRepository.findByCoordinate(coordinate))(executionContextProvider.repository)
+      areaIdDto <- areaIdOption.fold[Future[AreaIdDto]](
+        Future.failed(new NoSuchElementException("No area contains such coordinate"))
+      )(
+        areaId => Future.successful(AreaIdDto.from(areaId))
+      )
+    } yield areaIdDto
 
 
   /** 全てのエリアIDを取得する。
