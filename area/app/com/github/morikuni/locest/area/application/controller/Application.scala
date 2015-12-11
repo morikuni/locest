@@ -1,4 +1,4 @@
-package controllers
+package com.github.morikuni.locest.area.application.controller
 
 import com.github.morikuni.locest.area.application.dto.ErrorDto
 import com.github.morikuni.locest.area.application.service.DependAreaSearchService

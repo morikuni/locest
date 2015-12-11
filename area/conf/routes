@@ -3,6 +3,6 @@
 # ~~~~
 
 # Home page
-GET     /areas/ids                          controllers.Application.areas_ids
-GET     /areas/ids/coordinate/:lat/:lng     controllers.Application.areas_ids_coordinate(lat: Double, lng: Double)
-GET     /areas/:id                          controllers.Application.areas(id: Int)
+GET     /areas/ids                             com.github.morikuni.locest.area.application.controller.Application.areas_ids
+GET     /areas/ids/coordinate/:lat/:lng        com.github.morikuni.locest.area.application.controller.Application.areas_ids_coordinate(lat: Double, lng: Double)
+GET     /areas/:id                             com.github.morikuni.locest.area.application.controller.Application.areas(id: Int)
