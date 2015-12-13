@@ -24,10 +24,6 @@ object PostgreSQLTransactionManager extends ScalikeJDBCTransactionManager[Postgr
   }
   ConnectionPool.add('postgresql ,s"jdbc:postgresql://${host}:${port}/${database}", user, pass)
 
-  override def ask[S >: PostgreSQLSession <: Session]: Transaction[S, DBSession] = Transaction { (a, _) =>
-    Future.successful(a.asInstanceOf[PostgreSQLSession].session)
-  }
-
   override def borrow: Connection = ConnectionPool.borrow('postgresql)
 
   override def wrap(session: DBSession): PostgreSQLSession = PostgreSQLSession(session)

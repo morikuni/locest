@@ -43,5 +43,7 @@ trait ScalikeJDBCTransactionManager[S <: Session with ScalikeJDBCSession] extend
 
   def wrap(session: DBSession): S
 
-  def ask[XS >: S <: Session]: Transaction[XS, DBSession]
+  def ask[XS >: S <: Session]: Transaction[XS, DBSession] = Transaction { (xs, _) =>
+    Future.successful(xs.asInstanceOf[S].session)
+  }
 }

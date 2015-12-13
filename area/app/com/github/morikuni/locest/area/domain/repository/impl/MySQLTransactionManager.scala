@@ -23,10 +23,6 @@ object MySQLTransactionManager extends ScalikeJDBCTransactionManager[MySQLSessio
   }
   ConnectionPool.add('mysql, s"jdbc:mysql://${host}/${database}", user, pass)
 
-  override def ask[A >: MySQLSession <: Session]: Transaction[A, DBSession] = Transaction { (a, _) =>
-    Future.successful(a.asInstanceOf[MySQLSession].session)
-  }
-
   override def borrow: Connection = ConnectionPool.borrow('mysql)
 
   override def wrap(session: DBSession): MySQLSession = MySQLSession(session)
