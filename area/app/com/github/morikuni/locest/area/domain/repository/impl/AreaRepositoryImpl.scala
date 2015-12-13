@@ -15,7 +15,7 @@ class AreaRepositoryImpl extends AreaRepository {
     *         Transaction(None) id に対応するエリアが存在しないとき
     */
   override def find(id: AreaId): Transaction[AreaRepositorySession, Option[Area]] = PostgreSQLTransactionManager.ask.map { implicit session =>
-    sql"SELECT area_id, (prefecture || ' ' || area.city), ST_Y(center), ST_X(center) FROM area WHERE area_id = ?"
+    sql"SELECT area_id, name, ST_Y(center), ST_X(center) FROM Area WHERE area_id = ?"
       .bind(id.value)
       .map { r =>
         val aid = AreaId(r.int(1))
@@ -32,7 +32,7 @@ class AreaRepositoryImpl extends AreaRepository {
     * @return Transaction(List[AreaId]) 成功時
     */
   override def all: Transaction[AreaRepositorySession, List[AreaId]] = PostgreSQLTransactionManager.ask.map{ implicit session =>
-    sql"SELECT area_id FROM area".map(r => AreaId(r.int(1))).list.apply
+    sql"SELECT area_id FROM Area".map(r => AreaId(r.int(1))).list.apply
   }
 
   /** coordinate を含むエリアのIDを取得する。
@@ -42,8 +42,8 @@ class AreaRepositoryImpl extends AreaRepository {
     *         Transaction(None) coordinate を含むエリアが存在しないとき
     */
   override def findByCoordinate(coordinate: Coordinate): Transaction[AreaRepositorySession, Option[AreaId]] = PostgreSQLTransactionManager.ask.map{ implicit session =>
-    sql"SELECT area_id FROM shape WHERE ST_Intersects(shape, ST_GeomFromText(?, 4326))"
-      .bind(s"POINT(${coordinate.lat} ${coordinate.lng})")
+    sql"SELECT area_id FROM Shape WHERE ST_Intersects(shape, ST_GeomFromText(?, 4326))"
+      .bind(s"POINT(${coordinate.lng} ${coordinate.lat})")
       .map(r => AreaId(r.int(1))).first.apply
   }
 
