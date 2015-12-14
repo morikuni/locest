@@ -1,6 +1,6 @@
 package com.github.morikuni.locest.util
 
-/** 永続化するデータを表す。
+/** 識別可能なオブジェクト。
   *
   * @tparam Id 識別子の型
   * @tparam Prop 扱う属性の型

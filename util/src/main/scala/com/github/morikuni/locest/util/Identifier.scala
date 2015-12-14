@@ -1,6 +1,6 @@
 package com.github.morikuni.locest.util
 
-/** Entity を識別する。
+/** Entity の識別子。
   *
   * @tparam A 識別子の型
   */

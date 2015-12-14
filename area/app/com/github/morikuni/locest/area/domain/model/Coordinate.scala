@@ -1,5 +1,6 @@
 package com.github.morikuni.locest.area.domain.model
 
+import com.github.morikuni.locest.util.ValueObject
 import scala.util.{Success, Failure, Try}
 
 /** 緯度経度で座標を表す。
@@ -9,7 +10,7 @@ import scala.util.{Success, Failure, Try}
   * @param lat 緯度(-90 <= lat <= 90)
   * @param lng 経度(-180 <= lng <= 180)
   */
-case class Coordinate private(val lat: Double, val lng: Double)
+case class Coordinate private(val lat: Double, val lng: Double) extends ValueObject
 
 object Coordinate {
 
