@@ -24,7 +24,7 @@ trait AreaSearchServiceImpl extends AreaSearchService
     */
   override def search(id: Int): Future[AreaDto] =
     for {
-      areaOption <- areaRepositoryTransactionManager.execute(areaRepository.find(AreaId(id)))(executionContextProvider.repository)
+      areaOption <- areaRepositoryTransactionManager.execute(areaRepository.solve(AreaId(id)))(executionContextProvider.repository)
       areaDto <- areaOption.fold[Future[AreaDto]](
         Future.failed(new NoSuchElementException("No area has such id"))
       )(

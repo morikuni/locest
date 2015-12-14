@@ -13,7 +13,7 @@ trait AreaRepository extends Repository[Area] {
     * @return Transaction(Some(Area)) 成功時
     *         Transaction(None) id に対応するエリアが存在しないとき
     */
-  def find(id: AreaId): Transaction[AreaRepositorySession, Option[Area]]
+  def solve(id: AreaId): Transaction[AreaRepositorySession, Option[Area]]
 
 
   /** coordinate を含むエリアのIDを取得する。

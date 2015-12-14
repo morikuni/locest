@@ -14,7 +14,7 @@ class AreaRepositoryImpl extends AreaRepository {
     * @return Transaction(Some(Area)) 成功時
     *         Transaction(None) id に対応するエリアが存在しないとき
     */
-  override def find(id: AreaId): Transaction[AreaRepositorySession, Option[Area]] = PostgreSQLTransactionManager.ask.map { implicit session =>
+  override def solve(id: AreaId): Transaction[AreaRepositorySession, Option[Area]] = PostgreSQLTransactionManager.ask.map { implicit session =>
     sql"SELECT area_id, name, ST_Y(center), ST_X(center) FROM Area WHERE area_id = ?"
       .bind(id.value)
       .map { r =>
