@@ -1,0 +1,5 @@
+postgresql_network: "192.168.33.0/24"
+postgresql_database: "locest"
+postgresql_user: "locest"
+postgresql_password: "password"
+postgis_database: "{{ postgresql_database }}"
