@@ -1,6 +1,6 @@
 package com.github.morikuni.locest.frequency.domain.repository
 
-import com.github.morikuni.locest.frequency.domain.model.{WordId, FrequencyInformation, FrequencyInformationId}
+import com.github.morikuni.locest.frequency.domain.model.{FrequencyInformation, WordId}
 import com.github.morikuni.locest.util.{Repository, Session, Transaction, TransactionManager}
 
 trait FrequencyInformationRepositorySession extends Session
@@ -13,6 +13,12 @@ trait FrequencyInformationRepository extends Repository[FrequencyInformation] {
     *         Transaction(Nil) 頻度情報が保存されていない場合
     */
   def findByWordId(wordId: WordId): Transaction[FrequencyInformationRepositorySession, List[FrequencyInformation]]
+
+  /** 全単語の出現回数の合計を求める
+    *
+    * @return Transaction(Long) 成功時
+    */
+  def sumOfAllCounts: Transaction[FrequencyInformationRepositorySession, Long]
 }
 
 trait DependFrequencyInformationRepository {
