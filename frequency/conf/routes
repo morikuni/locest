@@ -1,0 +1,4 @@
+GET     /frequencies/word/:id           com.github.morikuni.locest.frequency.application.controller.RestApi.frequencies_word(id: Int)
+
+
+
