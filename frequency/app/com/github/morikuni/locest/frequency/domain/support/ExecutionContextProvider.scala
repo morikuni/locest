@@ -8,5 +8,5 @@ trait ExecutionContextProvider {
 }
 
 trait DependExecutionContextProvider {
-  def executionContextProvider: ExecutionContextProvider
+  implicit def executionContextProvider: ExecutionContextProvider
 }

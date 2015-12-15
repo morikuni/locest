@@ -10,5 +10,5 @@ class DefaultExecutionContextProvider extends ExecutionContextProvider {
 }
 
 trait InjectExecutionContextProvider extends DependExecutionContextProvider {
-  override def executionContextProvider: ExecutionContextProvider = new DefaultExecutionContextProvider
+  override implicit val executionContextProvider: ExecutionContextProvider = new DefaultExecutionContextProvider
 }
