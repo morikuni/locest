@@ -1,5 +1,8 @@
 package com.github.morikuni.locest.util
 
+import scala.collection.TraversableOnce
+import scala.collection.generic.CanBuildFrom
+import scala.collection.mutable.Builder
 import scala.concurrent.{Future, ExecutionContext}
 
 /** データの入出力処理を表す。
@@ -21,4 +24,12 @@ object Transaction {
   def successful[S <: Session, A](a: A): Transaction[S, A] = Transaction((_, _) => Future.successful(a))
   def failed[S <: Session, A](e: Throwable): Transaction[S, A] = Transaction((_, _) => Future.failed(e))
   def fromFuture[S <: Session, A](f: Future[A]): Transaction[S, A] = Transaction((_, _) => f)
+  def sequence[S <: Session, A, M[X] <: TraversableOnce[X]](seq: M[Transaction[S, A]])(implicit cbf: CanBuildFrom[M[Transaction[S, A]], A, M[A]]): Transaction[S, M[A]] = {
+    seq.foldLeft(Transaction.successful[S, Builder[A, M[A]]](cbf.apply(seq))) { (acc, tx) =>
+      (for {
+        ma <- acc
+        a <- tx
+      } yield (ma += a))
+    }.map(_.result)
+  }
 }
