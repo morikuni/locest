@@ -19,6 +19,13 @@ trait FrequencyInformationRepository extends Repository[FrequencyInformation] {
     * @return Transaction(Long) 成功時
     */
   def sumOfAllCounts: Transaction[FrequencyInformationRepositorySession, Long]
+
+  /** 現在の出現回数に指定された頻度情報の出現か回数を足し合わせる
+    *
+    * @param frequencyInformation 足し合わせる頻度情報
+    * @return Transaction(())
+    */
+  def add(frequencyInformation: FrequencyInformation): Transaction[FrequencyInformationRepositorySession, Unit]
 }
 
 trait DependFrequencyInformationRepository {

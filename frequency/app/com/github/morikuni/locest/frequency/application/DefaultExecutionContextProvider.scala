@@ -4,9 +4,9 @@ import com.github.morikuni.locest.frequency.domain.support.{DependExecutionConte
 import scala.concurrent.ExecutionContext
 
 class DefaultExecutionContextProvider extends ExecutionContextProvider {
-  override def default: ExecutionContext = play.api.libs.concurrent.Execution.Implicits.defaultContext
+  override implicit val default: ExecutionContext = play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-  override def repository: ExecutionContext = default
+  override val repository: ExecutionContext = default
 }
 
 trait InjectExecutionContextProvider extends DependExecutionContextProvider {

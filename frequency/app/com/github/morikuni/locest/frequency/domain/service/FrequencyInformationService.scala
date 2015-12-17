@@ -13,6 +13,17 @@ trait FrequencyInformationService {
     *         Future.failed(IOException) 入出力に失敗した場合
     */
   def allFrequenciesOfWord(wordId: WordId)(implicit ecp: ExecutionContextProvider): Future[List[FrequencyInformation]]
+
+  /** 指定された文章を指定された座標のエリアに登録する
+    *
+    * @param sentence 登録する文章
+    * @param lat 緯度
+    * @param lng 経度
+    * @return Future.successful(()) 成功時
+    *         Future.failed(NoSuchElementException)
+    *         Future.failed(IOException) 入出力に失敗したとき
+    */
+  def registerSentence(sentence: String, lat: Double, lng: Double)(implicit ecp: ExecutionContextProvider): Future[Unit]
 }
 
 trait DependFrequencyInformationService {

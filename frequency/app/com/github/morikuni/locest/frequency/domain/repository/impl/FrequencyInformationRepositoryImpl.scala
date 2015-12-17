@@ -31,6 +31,16 @@ class FrequencyInformationRepositoryImpl extends FrequencyInformationRepository 
       .map(r => r.long(1))
       .single.apply.getOrElse(0)
   }
+
+  /** 現在の出現回数に指定された頻度情報の出現か回数を足し合わせる
+    *
+    * @param frequencyInformation 足し合わせる頻度情報
+    * @return Transaction(())
+    */
+  override def add(frequencyInformation: FrequencyInformation): Transaction[FrequencyInformationRepositorySession, Unit] = PostgreSQLTransactionManager.ask.map { implicit session =>
+    sql"UPDATE Frequency SET word_count = word_count + ? WHERE word_id = ?".bind(frequencyInformation.property.count, frequencyInformation.id.value)
+      .update.apply
+  }
 }
 
 trait InjectFrequencyInformationRepository extends DependFrequencyInformationRepository {

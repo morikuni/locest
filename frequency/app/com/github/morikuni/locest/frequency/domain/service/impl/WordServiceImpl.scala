@@ -22,6 +22,7 @@ trait WordServiceImpl extends WordService
     */
   override def morphologicalAnalysis(sentence: String)(implicit ecp: ExecutionContextProvider): Future[Map[Word, Int]] = {
     import scala.collection.JavaConversions.asScalaBuffer
+    import ecp.default
 
     val textToSize = asScalaBuffer(tokenizer.tokenize(sentence))
       .map(_.getSurfaceForm)
@@ -35,7 +36,7 @@ trait WordServiceImpl extends WordService
         seq.map { word =>
           word -> textToSize(word.property.text)
         }.toMap
-      }(ecp.default)
+      }
   }
 }
 

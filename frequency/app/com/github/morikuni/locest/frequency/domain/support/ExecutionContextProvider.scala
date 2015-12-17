@@ -3,7 +3,7 @@ package com.github.morikuni.locest.frequency.domain.support
 import scala.concurrent.ExecutionContext
 
 trait ExecutionContextProvider {
-  def default: ExecutionContext
+  implicit def default: ExecutionContext
   def repository: ExecutionContext
 }
 
