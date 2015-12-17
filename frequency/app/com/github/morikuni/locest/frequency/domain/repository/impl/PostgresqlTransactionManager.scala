@@ -1,6 +1,6 @@
 package com.github.morikuni.locest.frequency.domain.repository.impl
 
-import com.github.morikuni.locest.frequency.domain.repository.FrequencyInformationRepositorySession
+import com.github.morikuni.locest.frequency.domain.repository.{WordRepositorySession, FrequencyInformationRepositorySession}
 import com.github.morikuni.locest.util.{Session, Transaction, TransactionManager}
 import com.typesafe.config.ConfigFactory
 import java.io.IOException
@@ -8,7 +8,9 @@ import play.api.Logger
 import scala.concurrent.{ExecutionContext, Future}
 import scalikejdbc.{ConnectionPool, DB, DBSession}
 
-case class PostgreSQLSession(val session: DBSession) extends FrequencyInformationRepositorySession
+case class PostgreSQLSession(val session: DBSession)
+  extends FrequencyInformationRepositorySession
+  with WordRepositorySession
 
 object PostgreSQLTransactionManager extends TransactionManager[PostgreSQLSession] {
   Class.forName("org.postgresql.Driver")

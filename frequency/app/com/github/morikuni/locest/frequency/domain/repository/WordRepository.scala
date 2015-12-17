@@ -6,20 +6,13 @@ import com.github.morikuni.locest.util.{Repository, Session, Transaction, Transa
 trait WordRepositorySession extends Session
 
 trait WordRepository extends Repository[Word] {
-  /** 単語がすでに保存されているか調べる
+  /** Word を作成し、保存する。
+    * 既に保存されている場合は、保存されている単語を取得する。
     *
     * @param wordProperty
-    * @return Transaction(Some(WordId)) 単語が保存されている場合
-    *         Transaction(None) 単語が登録されていない場合
+    * @return Transaction(Word) 成功時
     */
-  def find(wordProperty: WordProperty): Transaction[WordRepositorySession, Option[WordId]]
-
-  /** 単語を保存する
-    *
-    * @param wordProperty
-    * @return Transaction()
-    */
-  def store(wordProperty: WordProperty): Transaction[WordRepositorySession, Unit]
+  def create(wordProperty: WordProperty): Transaction[WordRepositorySession, Word]
 }
 
 trait DependWordRepository {

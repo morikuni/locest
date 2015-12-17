@@ -1,4 +1,4 @@
 GET     /frequencies/word/:id           com.github.morikuni.locest.frequency.application.controller.RestApi.frequencies_word(id: Int)
 GET     /count/all/                     com.github.morikuni.locest.frequency.application.controller.RestApi.count_all
-
+GET     /morphemes                      com.github.morikuni.locest.frequency.application.controller.RestApi.morphemes(q: String)
 
