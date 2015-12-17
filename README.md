@@ -1,4 +1,7 @@
 # locest
+
+[![Build Status](https://travis-ci.org/morikuni/locest.svg)](https://travis-ci.org/morikuni/locest)
+
 テキストから位置情報を推定するAPI（作成中）
 
 全3~4モジュールで構成される予定。
