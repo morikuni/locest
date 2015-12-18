@@ -18,16 +18,10 @@ trait FrequencyInformationServiceImpl extends FrequencyInformationService
     *
     * @param wordId 単語ID
     * @return Future.successful(List(FrequencyInformation)) 成功時
-    *         Future.failed(NoSuchElementException) 指定された単語IDが存在しない場合
     *         Future.failed(IOException) 入出力に失敗した場合
     */
   override def allFrequenciesOfWord(wordId: WordId)(implicit ecp: ExecutionContextProvider): Future[List[FrequencyInformation]] = {
-    import ecp.default
     frequencyInformationRepositoryTransactionManger.execute(frequencyInformationRepository.findByWordId(wordId))(ecp.repository)
-      .flatMap { l =>
-        if (l.isEmpty) Future.failed(new NoSuchElementException("No word has such ID"))
-        else Future.successful(l)
-      }
   }
 
   /** 指定された文章を指定された座標のエリアに登録する

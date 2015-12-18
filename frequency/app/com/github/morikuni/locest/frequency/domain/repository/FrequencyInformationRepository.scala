@@ -9,8 +9,7 @@ trait FrequencyInformationRepository extends Repository[FrequencyInformation] {
   /** 指定された単語についての全ての頻度情報を取得する
     *
     * @param wordId 単語ID
-    * @return Transaction(List(FrequencyInformation)) 頻度情報が保存されている場合
-    *         Transaction(Nil) 頻度情報が保存されていない場合
+    * @return Transaction(List(FrequencyInformation)) 成功時
     */
   def findByWordId(wordId: WordId): Transaction[FrequencyInformationRepositorySession, List[FrequencyInformation]]
 

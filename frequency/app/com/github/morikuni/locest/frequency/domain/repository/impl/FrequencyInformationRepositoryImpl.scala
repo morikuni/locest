@@ -10,8 +10,7 @@ class FrequencyInformationRepositoryImpl extends FrequencyInformationRepository 
   /** 指定された単語についての全ての頻度情報を取得する
     *
     * @param wordId 単語ID
-    * @return Transaction(List(FrequencyInformation)) 頻度情報が保存されている場合
-    *         Transaction(Nil) 頻度情報が保存されていない場合
+    * @return Transaction(List(FrequencyInformation)) 成功時
     */
   override def findByWordId(wordId: WordId): Transaction[FrequencyInformationRepositorySession, List[FrequencyInformation]] = PostgreSQLTransactionManager.ask.map { implicit session =>
     sql"SELECT word_id, area_id, word_count FROM Frequency WHERE word_id = ?".bind(wordId.value)
@@ -27,7 +26,12 @@ class FrequencyInformationRepositoryImpl extends FrequencyInformationRepository 
     * @return Transaction(Long) 成功時
     */
   override def sumOfAllCounts: Transaction[FrequencyInformationRepositorySession, Long] = PostgreSQLTransactionManager.ask.map { implicit session =>
-    sql"SELECT sum(word_count) FROM Frequency"
+    sql"""SELECT
+          CASE
+            WHEN sum(word_count) IS NULL THEN 0
+            WHEN sum(word_count) IS NOT NULL THEN sum(word_count)
+          END
+        FROM Frequency"""
       .map(r => r.long(1))
       .single.apply.getOrElse(0)
   }
@@ -38,8 +42,22 @@ class FrequencyInformationRepositoryImpl extends FrequencyInformationRepository 
     * @return Transaction(())
     */
   override def add(frequencyInformation: FrequencyInformation): Transaction[FrequencyInformationRepositorySession, Unit] = PostgreSQLTransactionManager.ask.map { implicit session =>
-    sql"UPDATE Frequency SET word_count = word_count + ? WHERE word_id = ?".bind(frequencyInformation.property.count, frequencyInformation.id.value)
-      .update.apply
+    val c = frequencyInformation.property.count
+    val wid = frequencyInformation.id.wordId.value
+    val aid = frequencyInformation.id.areaId.value
+    sql"SELECT 1 FROM Frequency WHERE word_id = ? AND area_id = ?"
+      .bind(wid, aid)
+      .map(_ => ())
+      .single.apply match {
+        case None =>
+          sql"INSERT INTO Frequency (word_id, area_id, word_count) VALUES (?, ?, ?)"
+            .bind(wid, aid, c)
+            .update.apply
+        case Some(_) =>
+          sql"UPDATE Frequency SET word_count = word_count + ? WHERE word_id = ? AND area_id = ?"
+            .bind(c, wid, aid)
+            .update.apply
+      }
   }
 }
 

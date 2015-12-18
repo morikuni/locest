@@ -9,8 +9,12 @@ trait FrequencyInformationUpdateService {
     * @param lat 緯度
     * @param lng 経度
     * @return Future.successful(())
-    *         Future.failed(
+    *         Future.failed(NoSuchElementException)
     *         Future.failed(IOException)
     */
   def registerSentence(sentence: String, lat: Double, lng: Double): Future[Unit]
+}
+
+trait DependFrequencyInformationUpdateService {
+  def frequencyInformationUpdateService: FrequencyInformationUpdateService
 }
