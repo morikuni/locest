@@ -27,7 +27,7 @@ class AreaSearchServiceSpec extends Specification with Mockito {
 
   "search" should {
     "return Area successfully" in {
-      val repo = AreaRepositoryHelper.createMock(find = Transaction.successful(area))
+      val repo = AreaRepositoryHelper.createMock(solve = Transaction.successful(Some(area)))
       val service = create(repo)
       val expect = AreaDto.from(area)
 
@@ -35,14 +35,14 @@ class AreaSearchServiceSpec extends Specification with Mockito {
     }
 
     "fail with IOException if AreaRepository.find failed with IOException" in {
-      val repo = AreaRepositoryHelper.createMock(find = Transaction.failed(new IOException))
+      val repo = AreaRepositoryHelper.createMock(solve = Transaction.failed(new IOException))
       val service = create(repo)
 
       Await.result(service.search(areaId.value), Duration.Inf) must throwA[IOException]
     }
 
-    "fail with NoSuchElementException if AreaRepository.find failed with NoSuchElementException" in {
-      val repo = AreaRepositoryHelper.createMock(find = Transaction.failed(new NoSuchElementException))
+    "fail with NoSuchElementException if AreaRepository.find returned None" in {
+      val repo = AreaRepositoryHelper.createMock(solve = Transaction.successful(None))
       val service = create(repo)
 
       Await.result(service.search(areaId.value), Duration.Inf) must throwA[NoSuchElementException]
@@ -54,7 +54,7 @@ class AreaSearchServiceSpec extends Specification with Mockito {
     val lng = 130
 
     "return AreaId successfully" in {
-      val repo = AreaRepositoryHelper.createMock(findByCoordinate = Transaction.successful(areaId))
+      val repo = AreaRepositoryHelper.createMock(findByCoordinate = Transaction.successful(Some(areaId)))
       val service = create(repo)
       val expect = AreaIdDto.from(areaId)
 
@@ -68,8 +68,8 @@ class AreaSearchServiceSpec extends Specification with Mockito {
       Await.result(service.searchIdOfAreaContain(lat, lng), Duration.Inf) must throwA[IOException]
     }
 
-    "fail with IOException if AreaRepository.findByCoordinate failed with NoSuchElementException" in {
-      val repo = AreaRepositoryHelper.createMock(findByCoordinate = Transaction.failed(new NoSuchElementException))
+    "fail with IOException if AreaRepository.findByCoordinate returned None" in {
+      val repo = AreaRepositoryHelper.createMock(findByCoordinate = Transaction.successful(None))
       val service = create(repo)
 
       Await.result(service.searchIdOfAreaContain(lat, lng), Duration.Inf) must throwA[NoSuchElementException]

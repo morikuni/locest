@@ -1,9 +1,10 @@
-name := "locest"
-
-version := "0.1-SNAPSHOT"
-
 lazy val commonSettings = Seq(
-  scalaVersion := "2.11.7"
+  version := "0.1-SNAPSHOT",
+  scalaVersion := "2.11.7",
+  resolvers ++= Seq(
+    "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",
+    "Atilika Open Source repository" at "http://www.atilika.org/nexus/content/repositories/atilika"
+  )
 )
 
 lazy val root =
@@ -43,4 +44,3 @@ lazy val frequency =
       )
     )
     .dependsOn(util)
-
