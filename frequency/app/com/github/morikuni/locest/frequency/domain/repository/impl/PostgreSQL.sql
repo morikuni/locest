@@ -3,7 +3,7 @@ CREATE TABLE Word(
   word_id SERIAL CONSTRAINT word_word_id_pkey PRIMARY KEY,
   word_text TEXT NOT NULL
 );
-CREATE UNIQUE INDEX word_text_index ON Word (text);
+CREATE UNIQUE INDEX word_text_index ON Word (word_text);
 
 -- FrequencyInformationRepository
 CREATE TABLE Frequency(

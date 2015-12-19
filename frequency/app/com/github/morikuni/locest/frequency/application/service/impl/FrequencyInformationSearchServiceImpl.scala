@@ -16,7 +16,6 @@ trait FrequencyInformationSearchServiceImpl extends FrequencyInformationSearchSe
     *
     * @param wordId 単語ID
     * @return Future.successful(List(FrequencyInformationDto)) 成功時
-    *         Future.failed(NoSuchElementException) 指定された単語が存在しない場合
     *         Future.failed(IOException) 入出力に失敗したとき
     */
   override def searchByWordId(wordId: Int): Future[List[FrequencyInformationDto]] = {

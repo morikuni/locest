@@ -8,7 +8,7 @@ trait WordService {
   /** 形態素解析をする
     *
     * @param sentence 形態素解析を刷る文書
-    * @return
+    * @return Future.successful(Map(Word -> Int)) (単語, 出現回数)のMap
     */
   def morphologicalAnalysis(sentence: String)(implicit ecp: ExecutionContextProvider): Future[Map[Word, Int]]
 }
