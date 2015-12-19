@@ -18,7 +18,7 @@ trait WordServiceImpl extends WordService
   /** 形態素解析する
     *
     * @param sentence 形態素解析する文書
-    * @return
+    * @return Future.successful(Map(Word -> Int)) (単語, 出現回数)のMap
     */
   override def morphologicalAnalysis(sentence: String)(implicit ecp: ExecutionContextProvider): Future[Map[Word, Int]] = {
     import scala.collection.JavaConversions.asScalaBuffer

@@ -9,7 +9,6 @@ trait FrequencyInformationService {
     *
     * @param wordId 単語ID
     * @return Future.successful(List(FrequencyInformation)) 成功時
-    *         Future.failed(NoSuchElementException) 指定された単語IDがそんざいしない場合
     *         Future.failed(IOException) 入出力に失敗した場合
     */
   def allFrequenciesOfWord(wordId: WordId)(implicit ecp: ExecutionContextProvider): Future[List[FrequencyInformation]]
