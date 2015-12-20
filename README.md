@@ -71,10 +71,10 @@ sbt "project frequency" "run 9001"
 
 ### API
 
-- GET http://127.0.0.1:9001/frequencies/word/:id (単語IDがidの頻度情報を全て取得する)
-- GET http://127.0.0.1:9001/count/all/ (全ての出現回数を和を取得する)
-- GET http://127.0.0.1:9001/morphemes?q=:q (文字列qを形態素解析して、単語と出現回数のリストに変換する)
-- POST http://127.0.0.1:9001/register/sentence?s=:s&lat=:lat&lng=:lng (文字列sが緯度経度lat, lngで出現したものとして頻度情報に加える)
+- GET http://localhost:9001/frequencies/word/:id (単語IDがidの頻度情報を全て取得する)
+- GET http://localhost:9001/count/all/ (全ての出現回数を和を取得する)
+- GET http://localhost:9001/morphemes?q=:q (文字列qを形態素解析して、単語と出現回数のリストに変換する)
+- POST http://localhost:9001/register/sentence?s=:s&lat=:lat&lng=:lng (文字列sが緯度経度lat, lngで出現したものとして頻度情報に加える)
 
 
 
